@@ -7,7 +7,7 @@ Goal: 3-5 real commits every day
 ## Week 1 - Setup & Auth (24 - 30 Oct)
 - [x] Day 1: Repo, README, .gitignore
 - [x] Day 2: Tailwind + Layout, Navbar, Footer
-- [ ] Day 3: Home page - Hero + Services
+- [x] Day 3: Home page - Hero + Services
 - [ ] Day 4: Prisma + DB models (User, Doctor, Appointment)
 - [ ] Day 5: Auth setup + Login page
 - [ ] Day 6: Register page + Protected routes
