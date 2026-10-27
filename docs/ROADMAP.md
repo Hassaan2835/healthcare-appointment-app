@@ -8,7 +8,7 @@ Goal: 3-5 real commits every day
 - [x] Day 1: Repo, README, .gitignore
 - [x] Day 2: Tailwind + Layout, Navbar, Footer
 - [x] Day 3: Home page - Hero + Services
-- [ ] Day 4: Prisma + DB models (User, Doctor, Appointment)
+- [x] Day 4: Prisma + DB models (User, Doctor, Appointment)
 - [ ] Day 5: Auth setup + Login page
 - [ ] Day 6: Register page + Protected routes
 - [ ] Day 7: Patient Profile + Vercel deployment
