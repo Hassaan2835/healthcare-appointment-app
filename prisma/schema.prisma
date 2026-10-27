@@ -29,3 +29,18 @@ model User {
   doctorProfile Doctor?
   appointments  Appointment[] @relation("PatientAppointments")
 }
+
+model Doctor {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialization String
+  bio            String?
+  fee            Int      @default(0)
+  experience     Int      @default(0)
+  available      Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  appointments Appointment[]
+}
