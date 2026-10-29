@@ -10,7 +10,7 @@ Goal: 3-5 real commits every day
 - [x] Day 3: Home page - Hero + Services
 - [x] Day 4: Prisma + DB models (User, Doctor, Appointment)
 - [x] Day 5: Auth setup + Login page
-- [ ] Day 6: Register page + Protected routes
+- [x] Day 6: Register page + Protected routes
 - [ ] Day 7: Patient Profile + Vercel deployment
 
 ## Week 2 - Frontend (31 Oct - 6 Nov)
