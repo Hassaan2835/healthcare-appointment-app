@@ -1,6 +1,8 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth-options";
+import prisma from "@/lib/prisma";
+import ProfileForm from "@/components/ProfileForm";
 
 export const metadata = {
   title: "My Profile | Healthcare Appointment App",
@@ -12,11 +14,26 @@ export const metadata = {
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
 
-  if (!session) {
+  if (!session?.user?.id) {
     redirect("/login");
   }
 
-  const { user } = session;
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    include: {
+      _count: { select: { appointments: true } },
+    },
+  });
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const memberSince = new Date(user.createdAt).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 
   return (
     <section className="mx-auto max-w-3xl px-4 py-16">
@@ -27,7 +44,7 @@ export default async function ProfilePage() {
         Your account information is shown below.
       </p>
 
-      <div className="mt-8 space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="mt-8 grid gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:grid-cols-2">
         <div>
           <p className="text-sm font-medium text-slate-500">Name</p>
           <p className="text-lg font-semibold text-slate-900">{user.name}</p>
@@ -37,16 +54,30 @@ export default async function ProfilePage() {
           <p className="text-lg font-semibold text-slate-900">{user.email}</p>
         </div>
         <div>
+          <p className="text-sm font-medium text-slate-500">Phone</p>
+          <p className="text-lg font-semibold text-slate-900">
+            {user.phone || "Not added yet"}
+          </p>
+        </div>
+        <div>
           <p className="text-sm font-medium text-slate-500">Account type</p>
           <p className="text-lg font-semibold capitalize text-slate-900">
-            {user.role?.toLowerCase()}
+            {user.role.toLowerCase()}
+          </p>
+        </div>
+        <div>
+          <p className="text-sm font-medium text-slate-500">Member since</p>
+          <p className="text-lg font-semibold text-slate-900">{memberSince}</p>
+        </div>
+        <div>
+          <p className="text-sm font-medium text-slate-500">Appointments booked</p>
+          <p className="text-lg font-semibold text-slate-900">
+            {user._count.appointments}
           </p>
         </div>
       </div>
 
-      <p className="mt-6 text-sm text-slate-500">
-        Your appointments will appear here once booking is connected.
-      </p>
+      <ProfileForm initialName={user.name} initialPhone={user.phone || ""} />
     </section>
   );
 }
