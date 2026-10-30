@@ -11,7 +11,7 @@ Goal: 3-5 real commits every day
 - [x] Day 4: Prisma + DB models (User, Doctor, Appointment)
 - [x] Day 5: Auth setup + Login page
 - [x] Day 6: Register page + Protected routes
-- [ ] Day 7: Patient Profile + Vercel deployment
+- [ ] Day 7: Patient Profile + Vercel deployment (profile done 2026-10-30; deployment pending)
 
 ## Week 2 - Frontend (31 Oct - 6 Nov)
 - [ ] Day 8: Doctors listing + Search
