@@ -14,7 +14,7 @@ Goal: 3-5 real commits every day
 - [x] Day 7: Patient Profile + Vercel deployment
 
 ## Week 2 - Frontend (31 Oct - 6 Nov)
-- [ ] Day 8: Doctors listing + Search
+- [x] Day 8: Doctors listing + Search
 - [ ] Day 9: Doctor detail page
 - [ ] Day 10: Booking form UI
 - [ ] Day 11: Patient Dashboard
