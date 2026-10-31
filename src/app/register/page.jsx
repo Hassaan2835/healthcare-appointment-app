@@ -41,7 +41,7 @@ export default function RegisterPage() {
           name: form.name,
           email: form.email,
           phone: form.phone,
-          password: form.password,
+          password: <redacted>
         }),
       });
       const data = await response.json();
@@ -60,24 +60,24 @@ export default function RegisterPage() {
   }
 
   const inputClass =
-    "w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-900 focus:border-teal-600 focus:outline-none";
-  const labelClass = "mb-1 block text-sm font-medium text-slate-700";
+    "w-full rounded-xl border border-white/10 bg-navy-900 px-3.5 py-2.5 text-slate-100 placeholder:text-slate-500 focus:border-mint-400/60 focus:outline-none focus:ring-2 focus:ring-mint-400/30";
+  const labelClass = "mb-1.5 block text-sm font-medium text-slate-300";
 
   return (
     <section className="mx-auto flex max-w-md flex-col px-4 py-16">
-      <h1 className="text-center text-3xl font-bold tracking-tight text-slate-900">
+      <h1 className="text-center font-display text-3xl font-bold tracking-tight text-white">
         Create your account
       </h1>
-      <p className="mt-2 text-center text-slate-600">
+      <p className="mt-2 text-center text-slate-400">
         Register as a patient to book and manage appointments.
       </p>
 
       <form
         onSubmit={handleSubmit}
-        className="mt-8 space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+        className="mt-8 space-y-4 rounded-2xl border border-white/10 bg-navy-800/80 p-6 shadow-card"
       >
         {error && (
-          <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
             {error}
           </p>
         )}
@@ -110,13 +110,13 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-teal-600 px-4 py-2.5 font-medium text-white transition hover:bg-teal-700 disabled:opacity-60"
+          className="w-full rounded-xl bg-mint-400 px-4 py-2.5 font-semibold text-navy-950 transition hover:bg-mint-300 disabled:opacity-60"
         >
           {loading ? "Creating account..." : "Register"}
         </button>
-        <p className="text-center text-sm text-slate-600">
+        <p className="text-center text-sm text-slate-400">
           Already have an account?{" "}
-          <Link href="/login" className="font-medium text-teal-700 hover:text-teal-800">
+          <Link href="/login" className="font-medium text-mint-300 hover:text-mint-200">
             Log in
           </Link>
         </p>
