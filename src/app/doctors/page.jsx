@@ -25,10 +25,13 @@ export default function DoctorsPage() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-16">
       <div className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-mint-400">
+          Verified specialists
+        </p>
+        <h1 className="mt-3 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
           Find a Doctor
         </h1>
-        <p className="mx-auto mt-3 max-w-2xl text-slate-600">
+        <p className="mx-auto mt-3 max-w-2xl text-slate-400">
           Search verified doctors by name, specialty, hospital or city and book
           your appointment online.
         </p>
@@ -44,7 +47,7 @@ export default function DoctorsPage() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search by name, specialty, hospital or city..."
-          className="w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 shadow-sm focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-100"
+          className="w-full rounded-xl border border-white/10 bg-navy-800 px-4 py-3.5 text-slate-100 placeholder:text-slate-500 shadow-card focus:border-mint-400/60 focus:outline-none focus:ring-2 focus:ring-mint-400/40"
         />
       </div>
 
@@ -56,8 +59,8 @@ export default function DoctorsPage() {
             onClick={() => setSpecialty(item)}
             className={
               specialty === item
-                ? "rounded-full bg-teal-600 px-4 py-2 text-sm font-medium text-white"
-                : "rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-teal-600 hover:text-teal-700"
+                ? "rounded-full bg-mint-400 px-4 py-2 text-sm font-semibold text-navy-950"
+                : "rounded-full border border-white/15 bg-navy-800/60 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-mint-400/60 hover:text-mint-300"
             }
           >
             {item}
@@ -65,7 +68,7 @@ export default function DoctorsPage() {
         ))}
       </div>
 
-      <p className="mt-8 text-sm text-slate-500" aria-live="polite">
+      <p className="mt-10 text-sm text-slate-400" aria-live="polite">
         Showing {results.length} of {doctors.length} doctors
       </p>
 
@@ -76,9 +79,9 @@ export default function DoctorsPage() {
           ))}
         </div>
       ) : (
-        <div className="mt-4 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-6 py-12 text-center">
-          <p className="font-medium text-slate-900">No doctors found</p>
-          <p className="mt-1 text-sm text-slate-600">
+        <div className="mt-4 rounded-2xl border border-dashed border-white/15 bg-navy-800/50 px-6 py-12 text-center">
+          <p className="font-medium text-white">No doctors found</p>
+          <p className="mt-1 text-sm text-slate-400">
             Try a different name or specialty, or clear the filters to see all
             doctors.
           </p>
@@ -88,7 +91,7 @@ export default function DoctorsPage() {
               setQuery("");
               setSpecialty("All");
             }}
-            className="mt-4 rounded-lg border border-teal-600 px-4 py-2 text-sm font-medium text-teal-700 transition hover:bg-teal-50"
+            className="mt-4 rounded-xl border border-mint-400/50 px-4 py-2 text-sm font-medium text-mint-300 transition hover:bg-mint-400 hover:text-navy-950"
           >
             Clear search and filters
           </button>
