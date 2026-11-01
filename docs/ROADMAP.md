@@ -15,7 +15,7 @@ Goal: 3-5 real commits every day
 
 ## Week 2 - Frontend (31 Oct - 6 Nov)
 - [x] Day 8: Doctors listing + Search
-- [ ] Day 9: Doctor detail page
+- [x] Day 9: Doctor detail page
 - [ ] Day 10: Booking form UI
 - [ ] Day 11: Patient Dashboard
 - [ ] Day 12: Admin Dashboard UI
