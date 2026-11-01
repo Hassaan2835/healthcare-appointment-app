@@ -58,12 +58,20 @@ export default function DoctorCard({ doctor }) {
         )}
       </p>
 
-      <Link
-        href="/appointments"
-        className="mt-4 rounded-xl bg-mint-400 px-4 py-2.5 text-center text-sm font-semibold text-navy-950 transition hover:bg-mint-300"
-      >
-        Book Appointment
-      </Link>
+      <div className="mt-4 flex gap-2">
+        <Link
+          href={"/doctors/" + doctor.id}
+          className="flex-1 rounded-xl border border-mint-400/50 px-4 py-2.5 text-center text-sm font-semibold text-mint-300 transition hover:bg-mint-400 hover:text-navy-950"
+        >
+          View Profile
+        </Link>
+        <Link
+          href="/appointments"
+          className="flex-1 rounded-xl bg-mint-400 px-4 py-2.5 text-center text-sm font-semibold text-navy-950 transition hover:bg-mint-300"
+        >
+          Book Appointment
+        </Link>
+      </div>
     </article>
   );
 }
