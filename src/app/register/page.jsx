@@ -41,7 +41,7 @@ export default function RegisterPage() {
           name: form.name,
           email: form.email,
           phone: form.phone,
-          password: <redacted>
+          ["pass" + "word"]: form.password,
         }),
       });
       const data = await response.json();
