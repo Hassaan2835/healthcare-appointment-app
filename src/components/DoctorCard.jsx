@@ -66,7 +66,7 @@ export default function DoctorCard({ doctor }) {
           View Profile
         </Link>
         <Link
-          href="/appointments"
+          href={"/appointments?doctor=" + doctor.id}
           className="flex-1 rounded-xl bg-mint-400 px-4 py-2.5 text-center text-sm font-semibold text-navy-950 transition hover:bg-mint-300"
         >
           Book Appointment
