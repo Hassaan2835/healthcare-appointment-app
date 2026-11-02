@@ -65,7 +65,7 @@ export default function DoctorDetailPage({ params }) {
             </div>
             <div className="sm:ml-auto">
               <Link
-                href="/appointments"
+                href={"/appointments?doctor=" + doctor.id}
                 className="inline-block rounded-xl bg-mint-400 px-6 py-3 font-semibold text-navy-950 shadow-glow transition hover:bg-mint-300"
               >
                 Book Appointment
