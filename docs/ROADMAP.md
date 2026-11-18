@@ -17,7 +17,7 @@ Goal: 3-5 real commits every day
 - [x] Day 8: Doctors listing + Search
 - [x] Day 9: Doctor detail page
 - [x] Day 10: Booking form UI
-- [ ] Day 11: Patient Dashboard
+- [x] Day 11: Patient Dashboard
 - [ ] Day 12: Admin Dashboard UI
 - [ ] Day 13: Dark mode + Responsive fixes
 - [ ] Day 14: Reusable components
