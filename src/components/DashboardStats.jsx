@@ -1,18 +1,20 @@
 // Day 11: Patient Dashboard - stat cards.
 // Pure presentational component so it can be reused by the
-// admin dashboard on Day 12 as well.
+// admin dashboard on Day 12 as well. Pass a custom `cards` array
+// to relabel the tiles (the admin dashboard does this); otherwise
+// the patient appointment cards below are used.
 
-const CARDS = [
+const DEFAULT_CARDS = [
   { key: "total", label: "Total appointments", hint: "All time" },
   { key: "upcoming", label: "Upcoming", hint: "Confirmed + pending" },
   { key: "completed", label: "Completed", hint: "Finished visits" },
   { key: "cancelled", label: "Cancelled", hint: "Cancelled visits" },
 ];
 
-export default function DashboardStats({ stats }) {
+export default function DashboardStats({ stats, cards = DEFAULT_CARDS }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {CARDS.map((card) => (
+      {cards.map((card) => (
         <div
           key={card.key}
           className="rounded-2xl border border-white/10 bg-navy-800/70 p-5 shadow-card"
