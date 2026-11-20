@@ -17,10 +17,10 @@ export default function DashboardStats({ stats, cards = DEFAULT_CARDS }) {
       {cards.map((card) => (
         <div
           key={card.key}
-          className="rounded-2xl border border-white/10 bg-navy-800/70 p-5 shadow-card"
+          className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-800/70 p-5 shadow-sm dark:shadow-card"
         >
-          <p className="text-sm font-medium text-slate-400">{card.label}</p>
-          <p className="mt-2 font-display text-3xl font-bold text-white">
+          <p className="text-sm font-medium text-slate-600 dark:text-slate-400">{card.label}</p>
+          <p className="mt-2 font-display text-3xl font-bold text-slate-900 dark:text-white">
             {stats[card.key] ?? 0}
           </p>
           <p className="mt-1 text-xs text-slate-500">{card.hint}</p>

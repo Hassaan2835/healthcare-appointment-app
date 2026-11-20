@@ -21,25 +21,25 @@ export default function Hero() {
       />
 
       <div className="relative mx-auto max-w-6xl px-4 pb-20 pt-16 text-center sm:pt-24">
-        <p className="inline-flex items-center gap-2 rounded-full border border-mint-400/30 bg-mint-400/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-mint-300">
+        <p className="inline-flex items-center gap-2 rounded-full border border-mint-400/30 bg-mint-400/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-mint-600 dark:text-mint-300">
           Premium Healthcare - Rawalpindi &amp; Islamabad
         </p>
 
-        <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-6xl">
+        <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-extrabold leading-tight tracking-tight text-slate-900 dark:text-white sm:text-6xl">
           Book a Doctor Appointment in{" "}
           <span className="bg-gradient-to-r from-mint-300 to-mint-600 bg-clip-text text-transparent">
             Minutes
           </span>
         </h1>
 
-        <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-400">
+        <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-600 dark:text-slate-400">
           Find verified specialists, compare transparent fees and book your
           visit online. No phone calls, no queues, no waiting in line.
         </p>
 
         <form
           action="/doctors"
-          className="mx-auto mt-10 flex max-w-2xl flex-col gap-3 rounded-2xl border border-white/10 bg-navy-800/80 p-3 shadow-card backdrop-blur sm:flex-row sm:items-center"
+          className="mx-auto mt-10 flex max-w-2xl flex-col gap-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-800/80 p-3 shadow-sm dark:shadow-card backdrop-blur sm:flex-row sm:items-center"
         >
           <label htmlFor="hero-search" className="sr-only">
             Search doctors
@@ -48,7 +48,7 @@ export default function Hero() {
             id="hero-search"
             type="search"
             placeholder="Search doctors, specialties, hospitals..."
-            className="w-full flex-1 rounded-xl bg-navy-900 px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-mint-400/60"
+            className="w-full flex-1 rounded-xl bg-slate-100 dark:bg-navy-900 px-4 py-3 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-mint-400/60"
           />
           <button
             type="submit"
@@ -59,11 +59,11 @@ export default function Hero() {
         </form>
 
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link href="/appointments" className="text-sm font-medium text-slate-300 transition hover:text-mint-300">
+          <Link href="/appointments" className="text-sm font-medium text-slate-700 dark:text-slate-300 transition hover:text-mint-600 dark:hover:text-mint-300">
             Book Appointment -&gt;
           </Link>
-          <span className="hidden text-slate-600 sm:inline">|</span>
-          <Link href="/register" className="text-sm font-medium text-slate-300 transition hover:text-mint-300">
+          <span className="hidden text-slate-600 dark:text-slate-400 sm:inline">|</span>
+          <Link href="/register" className="text-sm font-medium text-slate-700 dark:text-slate-300 transition hover:text-mint-600 dark:hover:text-mint-300">
             Create free account -&gt;
           </Link>
         </div>
@@ -72,10 +72,10 @@ export default function Hero() {
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className="rounded-2xl border border-white/10 bg-navy-800/60 px-4 py-5"
+              className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-800/60 px-4 py-5"
             >
-              <dd className="font-display text-2xl font-bold text-white">{stat.value}</dd>
-              <dd className="mt-1 text-xs uppercase tracking-wider text-slate-400">
+              <dd className="font-display text-2xl font-bold text-slate-900 dark:text-white">{stat.value}</dd>
+              <dd className="mt-1 text-xs uppercase tracking-wider text-slate-600 dark:text-slate-400">
                 {stat.label}
               </dd>
             </div>

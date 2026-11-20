@@ -37,41 +37,41 @@ export default async function ProfilePage() {
 
   return (
     <section className="mx-auto max-w-3xl px-4 py-16">
-      <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+      <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
         My Profile
       </h1>
-      <p className="mt-2 text-slate-600">
+      <p className="mt-2 text-slate-600 dark:text-slate-400">
         Your account information is shown below.
       </p>
 
-      <div className="mt-8 grid gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:grid-cols-2">
+      <div className="mt-8 grid gap-4 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-800/70 p-6 shadow-sm dark:shadow-card sm:grid-cols-2">
         <div>
           <p className="text-sm font-medium text-slate-500">Name</p>
-          <p className="text-lg font-semibold text-slate-900">{user.name}</p>
+          <p className="text-lg font-semibold text-slate-900 dark:text-white">{user.name}</p>
         </div>
         <div>
           <p className="text-sm font-medium text-slate-500">Email</p>
-          <p className="text-lg font-semibold text-slate-900">{user.email}</p>
+          <p className="text-lg font-semibold text-slate-900 dark:text-white">{user.email}</p>
         </div>
         <div>
           <p className="text-sm font-medium text-slate-500">Phone</p>
-          <p className="text-lg font-semibold text-slate-900">
+          <p className="text-lg font-semibold text-slate-900 dark:text-white">
             {user.phone || "Not added yet"}
           </p>
         </div>
         <div>
           <p className="text-sm font-medium text-slate-500">Account type</p>
-          <p className="text-lg font-semibold capitalize text-slate-900">
+          <p className="text-lg font-semibold capitalize text-slate-900 dark:text-white">
             {user.role.toLowerCase()}
           </p>
         </div>
         <div>
           <p className="text-sm font-medium text-slate-500">Member since</p>
-          <p className="text-lg font-semibold text-slate-900">{memberSince}</p>
+          <p className="text-lg font-semibold text-slate-900 dark:text-white">{memberSince}</p>
         </div>
         <div>
           <p className="text-sm font-medium text-slate-500">Appointments booked</p>
-          <p className="text-lg font-semibold text-slate-900">
+          <p className="text-lg font-semibold text-slate-900 dark:text-white">
             {user._count.appointments}
           </p>
         </div>

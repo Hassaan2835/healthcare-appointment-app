@@ -35,24 +35,24 @@ export default function LoginPage() {
   }
 
   const inputClass =
-    "w-full rounded-xl border border-white/10 bg-navy-900 px-3.5 py-2.5 text-slate-100 placeholder:text-slate-500 focus:border-mint-400/60 focus:outline-none focus:ring-2 focus:ring-mint-400/30";
-  const labelClass = "mb-1.5 block text-sm font-medium text-slate-300";
+    "w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-navy-900 px-3.5 py-2.5 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:border-mint-400/60 focus:outline-none focus:ring-2 focus:ring-mint-400/30";
+  const labelClass = "mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300";
 
   return (
     <section className="mx-auto flex max-w-md flex-col px-4 py-16">
-      <h1 className="text-center font-display text-3xl font-bold tracking-tight text-white">
+      <h1 className="text-center font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
         Welcome back
       </h1>
-      <p className="mt-2 text-center text-slate-400">
+      <p className="mt-2 text-center text-slate-600 dark:text-slate-400">
         Log in to manage your appointments.
       </p>
 
       <form
         onSubmit={handleSubmit}
-        className="mt-8 space-y-4 rounded-2xl border border-white/10 bg-navy-800/80 p-6 shadow-card"
+        className="mt-8 space-y-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-800/80 p-6 shadow-sm dark:shadow-card"
       >
         {error && (
-          <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+          <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-300">
             {error}
           </p>
         )}
@@ -91,9 +91,9 @@ export default function LoginPage() {
         >
           {loading ? "Logging in..." : "Log in"}
         </button>
-        <p className="text-center text-sm text-slate-400">
+        <p className="text-center text-sm text-slate-600 dark:text-slate-400">
           Do not have an account?{" "}
-          <Link href="/register" className="font-medium text-mint-300 hover:text-mint-200">
+          <Link href="/register" className="font-medium text-mint-600 dark:text-mint-300 hover:text-mint-700 dark:hover:text-mint-200">
             Register
           </Link>
         </p>

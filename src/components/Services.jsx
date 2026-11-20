@@ -41,13 +41,13 @@ export default function Services() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-20">
       <div className="text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-mint-400">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-mint-600 dark:text-mint-400">
           What we treat
         </p>
-        <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+        <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
           Our Services
         </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-slate-400">
+        <p className="mx-auto mt-3 max-w-2xl text-slate-600 dark:text-slate-400">
           Choose a specialty and book an appointment with a doctor who fits
           your needs and schedule.
         </p>
@@ -56,9 +56,9 @@ export default function Services() {
         {services.map((service) => (
           <article
             key={service.name}
-            className="group rounded-2xl border border-white/10 bg-navy-800/70 p-6 transition hover:-translate-y-1 hover:border-mint-400/50 hover:shadow-glow"
+            className="group rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-800/70 p-6 transition hover:-translate-y-1 hover:border-mint-400/50 hover:shadow-glow"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-mint-400/10 text-mint-300 transition group-hover:bg-mint-400 group-hover:text-navy-950">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-mint-400/10 text-mint-600 dark:text-mint-300 transition group-hover:bg-mint-400 group-hover:text-navy-950">
               <svg
                 viewBox="0 0 24 24"
                 className="h-6 w-6"
@@ -72,13 +72,13 @@ export default function Services() {
                 <path d={service.icon} />
               </svg>
             </div>
-            <h3 className="mt-4 text-lg font-semibold text-white">{service.name}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-slate-400">
+            <h3 className="mt-4 text-lg font-semibold text-slate-900 dark:text-white">{service.name}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
               {service.description}
             </p>
             <a
               href="/doctors"
-              className="mt-4 inline-block text-sm font-medium text-mint-300 transition hover:text-mint-200"
+              className="mt-4 inline-block text-sm font-medium text-mint-600 dark:text-mint-300 transition hover:text-mint-700 dark:hover:text-mint-200"
             >
               Book this service -&gt;
             </a>

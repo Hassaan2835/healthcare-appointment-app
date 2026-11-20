@@ -39,21 +39,24 @@ export default function ProfileForm({ initialName, initialPhone }) {
     }
   }
 
+  // Day 13: unified with the mint/navy theme (was teal) and given
+  // light + dark classes like the rest of the app.
   const inputClass =
-    "w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-900 focus:border-teal-600 focus:outline-none";
-  const labelClass = "mb-1 block text-sm font-medium text-slate-700";
+    "w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-slate-900 placeholder:text-slate-500 focus:border-mint-500/60 focus:outline-none focus:ring-2 focus:ring-mint-400/30 dark:border-white/10 dark:bg-navy-900 dark:text-slate-100";
+  const labelClass =
+    "mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300";
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="mt-8 space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+      className="mt-8 space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-navy-800/70 dark:shadow-card"
     >
-      <h2 className="text-lg font-semibold text-slate-900">Edit profile</h2>
+      <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Edit profile</h2>
       {message && (
-        <p className="rounded-lg bg-teal-50 px-4 py-3 text-sm text-teal-700">{message}</p>
+        <p className="rounded-xl border border-mint-500/30 bg-mint-400/10 px-4 py-3 text-sm text-mint-600 dark:text-mint-300">{message}</p>
       )}
       {error && (
-        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+        <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-300">{error}</p>
       )}
       <div>
         <label htmlFor="profile-name" className={labelClass}>Full name</label>
@@ -69,7 +72,7 @@ export default function ProfileForm({ initialName, initialPhone }) {
       <button
         type="submit"
         disabled={loading}
-        className="rounded-lg bg-teal-600 px-5 py-2.5 font-medium text-white transition hover:bg-teal-700 disabled:opacity-60"
+        className="rounded-xl bg-mint-400 px-5 py-2.5 font-semibold text-navy-950 transition hover:bg-mint-300 disabled:opacity-60"
       >
         {loading ? "Saving..." : "Save changes"}
       </button>

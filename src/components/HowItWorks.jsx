@@ -21,13 +21,13 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section className="border-y border-white/5 bg-navy-850">
+    <section className="border-y border-slate-200 dark:border-white/5 bg-slate-100 dark:bg-navy-850">
       <div className="mx-auto max-w-6xl px-4 py-20">
         <div className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-mint-400">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-mint-600 dark:text-mint-400">
             Simple by design
           </p>
-          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
             How It Works
           </h2>
         </div>
@@ -35,13 +35,13 @@ export default function HowItWorks() {
           {steps.map((step) => (
             <div
               key={step.number}
-              className="relative rounded-2xl border border-white/10 bg-navy-800/70 p-7"
+              className="relative rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-800/70 p-7"
             >
-              <span className="font-display text-4xl font-extrabold text-mint-400/25">
+              <span className="font-display text-4xl font-extrabold text-mint-600 dark:text-mint-400/25">
                 {step.number}
               </span>
-              <h3 className="mt-3 text-lg font-semibold text-white">{step.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-400">
+              <h3 className="mt-3 text-lg font-semibold text-slate-900 dark:text-white">{step.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                 {step.description}
               </p>
             </div>

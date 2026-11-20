@@ -3,10 +3,10 @@
 // already included by the dashboard page.
 
 const STATUS_STYLES = {
-  PENDING: "border-amber-400/30 bg-amber-400/10 text-amber-300",
-  CONFIRMED: "border-mint-400/30 bg-mint-400/10 text-mint-300",
-  CANCELLED: "border-red-500/30 bg-red-500/10 text-red-300",
-  COMPLETED: "border-white/15 bg-white/5 text-slate-300",
+  PENDING: "border-amber-400/30 bg-amber-400/10 text-amber-600 dark:text-amber-300",
+  CONFIRMED: "border-mint-400/30 bg-mint-400/10 text-mint-600 dark:text-mint-300",
+  CANCELLED: "border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-300",
+  COMPLETED: "border-slate-200 dark:border-white/15 bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300",
 };
 
 const STATUS_LABELS = {
@@ -32,15 +32,15 @@ export default function AppointmentCard({ appointment }) {
   const fee = doctor?.fee;
 
   return (
-    <article className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-navy-800/70 p-5 shadow-card sm:flex-row sm:items-center sm:justify-between">
+    <article className="flex flex-col gap-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-800/70 p-5 shadow-sm dark:shadow-card sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-start gap-4">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-mint-300 to-mint-600 font-display text-base font-bold text-navy-950">
           {doctorName.replace("Dr. ", "").split(" ").map((part) => part[0]).slice(0, 2).join("")}
         </div>
         <div>
-          <h3 className="font-semibold text-white">{doctorName}</h3>
-          <p className="text-sm text-mint-300">{specialization}</p>
-          <p className="mt-1 text-sm text-slate-400">
+          <h3 className="font-semibold text-slate-900 dark:text-white">{doctorName}</h3>
+          <p className="text-sm text-mint-600 dark:text-mint-300">{specialization}</p>
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
             {formatDate(appointment.date)}
             {appointment.reason ? ` — ${appointment.reason}` : ""}
           </p>

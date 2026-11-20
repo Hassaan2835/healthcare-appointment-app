@@ -8,13 +8,13 @@ export default function FeaturedDoctors() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-20">
       <div className="text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-mint-400">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-mint-600 dark:text-mint-400">
           Handpicked for you
         </p>
-        <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+        <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
           Top Rated Doctors
         </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-slate-400">
+        <p className="mx-auto mt-3 max-w-2xl text-slate-600 dark:text-slate-400">
           Our highest rated specialists, trusted by hundreds of patients in
           Rawalpindi and Islamabad.
         </p>
@@ -27,7 +27,7 @@ export default function FeaturedDoctors() {
       <div className="mt-10 text-center">
         <Link
           href="/doctors"
-          className="inline-block rounded-xl border border-mint-400/50 px-6 py-3 font-medium text-mint-300 transition hover:bg-mint-400 hover:text-navy-950"
+          className="inline-block rounded-xl border border-mint-400/50 px-6 py-3 font-medium text-mint-600 dark:text-mint-300 transition hover:bg-mint-400 hover:text-navy-950"
         >
           View All Doctors
         </Link>

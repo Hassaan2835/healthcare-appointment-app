@@ -11,8 +11,8 @@ const TIME_SLOTS = [
 ];
 
 const inputClass =
-  "w-full rounded-xl border border-white/10 bg-navy-900 px-3.5 py-2.5 text-slate-100 placeholder:text-slate-500 focus:border-mint-400/60 focus:outline-none focus:ring-2 focus:ring-mint-400/30";
-const labelClass = "mb-1.5 block text-sm font-medium text-slate-300";
+  "w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-navy-900 px-3.5 py-2.5 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:border-mint-400/60 focus:outline-none focus:ring-2 focus:ring-mint-400/30";
+const labelClass = "mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300";
 
 export default function BookingForm({ initialDoctorId = "" }) {
   const [doctorId, setDoctorId] = useState(initialDoctorId);
@@ -65,16 +65,16 @@ export default function BookingForm({ initialDoctorId = "" }) {
 
   if (booked) {
     return (
-      <div className="rounded-2xl border border-mint-400/30 bg-navy-800/80 p-7 text-center shadow-card">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-mint-400/15 text-mint-300">
+      <div className="rounded-2xl border border-mint-400/30 bg-white dark:bg-navy-800/80 p-7 text-center shadow-sm dark:shadow-card">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-mint-400/15 text-mint-600 dark:text-mint-300">
           <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M20 6L9 17l-5-5" />
           </svg>
         </div>
-        <h2 className="mt-4 font-display text-2xl font-bold text-white">
+        <h2 className="mt-4 font-display text-2xl font-bold text-slate-900 dark:text-white">
           Appointment Request Sent
         </h2>
-        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-slate-300">
+        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-slate-700 dark:text-slate-300">
           {booked.name}, your visit with {booked.doctor.name} ({booked.doctor.specialty})
           is requested for {booked.date} at {booked.slot}. The clinic will confirm
           shortly on {booked.phone}.
@@ -83,7 +83,7 @@ export default function BookingForm({ initialDoctorId = "" }) {
           Online booking confirmation goes live with our booking system update.
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-          <Link href="/doctors" className="rounded-xl border border-mint-400/50 px-5 py-2.5 text-sm font-semibold text-mint-300 transition hover:bg-mint-400 hover:text-navy-950">
+          <Link href="/doctors" className="rounded-xl border border-mint-400/50 px-5 py-2.5 text-sm font-semibold text-mint-600 dark:text-mint-300 transition hover:bg-mint-400 hover:text-navy-950">
             Browse More Doctors
           </Link>
           <button
@@ -101,10 +101,10 @@ export default function BookingForm({ initialDoctorId = "" }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-white/10 bg-navy-800/80 p-6 shadow-card sm:p-7"
+      className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-800/80 p-6 shadow-sm dark:shadow-card sm:p-7"
     >
       {error && (
-        <p className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+        <p className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-300">
           {error}
         </p>
       )}
@@ -127,11 +127,11 @@ export default function BookingForm({ initialDoctorId = "" }) {
       </div>
 
       {doctor && (
-        <div className="mt-4 flex items-center justify-between rounded-xl bg-navy-900/80 px-4 py-3 text-sm">
-          <span className="text-slate-300">
+        <div className="mt-4 flex items-center justify-between rounded-xl bg-slate-100 dark:bg-navy-900/80 px-4 py-3 text-sm">
+          <span className="text-slate-700 dark:text-slate-300">
             {doctor.hospital} - {doctor.timings}
           </span>
-          <span className="font-semibold text-mint-300">Fee Rs. {doctor.fee}</span>
+          <span className="font-semibold text-mint-600 dark:text-mint-300">Fee Rs. {doctor.fee}</span>
         </div>
       )}
 
@@ -171,7 +171,7 @@ export default function BookingForm({ initialDoctorId = "" }) {
               className={
                 slot === time
                   ? "rounded-full bg-mint-400 px-3.5 py-1.5 text-sm font-semibold text-navy-950"
-                  : "rounded-full border border-white/15 px-3.5 py-1.5 text-sm text-slate-300 transition hover:border-mint-400/60 hover:text-mint-300"
+                  : "rounded-full border border-slate-200 dark:border-white/15 px-3.5 py-1.5 text-sm text-slate-700 dark:text-slate-300 transition hover:border-mint-400/60 hover:text-mint-600 dark:hover:text-mint-300"
               }
             >
               {time}
