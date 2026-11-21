@@ -1,20 +1,11 @@
 // Day 12: Admin Dashboard - recent appointments table.
 // Receives Prisma Appointments with their Patient (User) and Doctor
 // (with the doctor's User) already included by the admin page.
+//
+// Day 14: the status pill now comes from the shared StatusBadge
+// primitive instead of a local copy of the status styles.
 
-const STATUS_STYLES = {
-  PENDING: "border-amber-400/30 bg-amber-400/10 text-amber-600 dark:text-amber-300",
-  CONFIRMED: "border-mint-400/30 bg-mint-400/10 text-mint-600 dark:text-mint-300",
-  CANCELLED: "border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-300",
-  COMPLETED: "border-slate-200 dark:border-white/15 bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300",
-};
-
-const STATUS_LABELS = {
-  PENDING: "Pending",
-  CONFIRMED: "Confirmed",
-  CANCELLED: "Cancelled",
-  COMPLETED: "Completed",
-};
+import { StatusBadge } from "@/components/ui";
 
 function formatDate(value) {
   return new Date(value).toLocaleDateString("en-GB", {
@@ -76,11 +67,7 @@ export default function AdminAppointmentsTable({ appointments }) {
                 {appointment.reason || "—"}
               </td>
               <td className="px-5 py-4">
-                <span
-                  className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${STATUS_STYLES[appointment.status] || STATUS_STYLES.PENDING}`}
-                >
-                  {STATUS_LABELS[appointment.status] || appointment.status}
-                </span>
+                <StatusBadge status={appointment.status} />
               </td>
             </tr>
           ))}

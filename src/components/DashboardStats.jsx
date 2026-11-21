@@ -3,6 +3,10 @@
 // admin dashboard on Day 12 as well. Pass a custom `cards` array
 // to relabel the tiles (the admin dashboard does this); otherwise
 // the patient appointment cards below are used.
+//
+// Day 14: each tile is now the shared Card primitive.
+
+import { Card } from "@/components/ui";
 
 const DEFAULT_CARDS = [
   { key: "total", label: "Total appointments", hint: "All time" },
@@ -15,16 +19,13 @@ export default function DashboardStats({ stats, cards = DEFAULT_CARDS }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {cards.map((card) => (
-        <div
-          key={card.key}
-          className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-800/70 p-5 shadow-sm dark:shadow-card"
-        >
+        <Card key={card.key}>
           <p className="text-sm font-medium text-slate-600 dark:text-slate-400">{card.label}</p>
           <p className="mt-2 font-display text-3xl font-bold text-slate-900 dark:text-white">
             {stats[card.key] ?? 0}
           </p>
           <p className="mt-1 text-xs text-slate-500">{card.hint}</p>
-        </div>
+        </Card>
       ))}
     </div>
   );

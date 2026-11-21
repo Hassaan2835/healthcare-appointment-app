@@ -1,18 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { doctors } from "@/data/doctors";
+import { Button, Input, Select } from "@/components/ui";
 
 const TIME_SLOTS = [
   "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
   "12:00 PM", "02:00 PM", "02:30 PM", "03:00 PM", "03:30 PM", "04:00 PM",
   "04:30 PM", "05:00 PM", "05:30 PM", "06:00 PM",
 ];
-
-const inputClass =
-  "w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-navy-900 px-3.5 py-2.5 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:border-mint-400/60 focus:outline-none focus:ring-2 focus:ring-mint-400/30";
-const labelClass = "mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300";
 
 export default function BookingForm({ initialDoctorId = "" }) {
   const [doctorId, setDoctorId] = useState(initialDoctorId);
@@ -83,16 +79,12 @@ export default function BookingForm({ initialDoctorId = "" }) {
           Online booking confirmation goes live with our booking system update.
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-          <Link href="/doctors" className="rounded-xl border border-mint-400/50 px-5 py-2.5 text-sm font-semibold text-mint-600 dark:text-mint-300 transition hover:bg-mint-400 hover:text-navy-950">
+          <Button href="/doctors" variant="outline">
             Browse More Doctors
-          </Link>
-          <button
-            type="button"
-            onClick={() => setBooked(null)}
-            className="rounded-xl bg-mint-400 px-5 py-2.5 text-sm font-semibold text-navy-950 transition hover:bg-mint-300"
-          >
+          </Button>
+          <Button type="button" onClick={() => setBooked(null)}>
             Book Another Appointment
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -109,22 +101,19 @@ export default function BookingForm({ initialDoctorId = "" }) {
         </p>
       )}
 
-      <div>
-        <label htmlFor="doctor" className={labelClass}>Select doctor</label>
-        <select
-          id="doctor"
-          value={doctorId}
-          onChange={(event) => setDoctorId(event.target.value)}
-          className={inputClass}
-        >
-          <option value="">Choose a doctor...</option>
-          {doctors.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.name} - {item.specialty} ({item.city})
-            </option>
-          ))}
-        </select>
-      </div>
+      <Select
+        id="doctor"
+        label="Select doctor"
+        value={doctorId}
+        onChange={(event) => setDoctorId(event.target.value)}
+      >
+        <option value="">Choose a doctor...</option>
+        {doctors.map((item) => (
+          <option key={item.id} value={item.id}>
+            {item.name} - {item.specialty} ({item.city})
+          </option>
+        ))}
+      </Select>
 
       {doctor && (
         <div className="mt-4 flex items-center justify-between rounded-xl bg-slate-100 dark:bg-navy-900/80 px-4 py-3 text-sm">
@@ -136,32 +125,26 @@ export default function BookingForm({ initialDoctorId = "" }) {
       )}
 
       <div className="mt-5 grid gap-5 sm:grid-cols-2">
-        <div>
-          <label htmlFor="date" className={labelClass}>Appointment date</label>
-          <input
-            id="date"
-            type="date"
-            min={today}
-            value={date}
-            onChange={(event) => setDate(event.target.value)}
-            className={inputClass}
-          />
-        </div>
-        <div>
-          <label htmlFor="name" className={labelClass}>Patient name</label>
-          <input
-            id="name"
-            type="text"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            className={inputClass}
-            placeholder="Full name of the patient"
-          />
-        </div>
+        <Input
+          id="date"
+          type="date"
+          label="Appointment date"
+          min={today}
+          value={date}
+          onChange={(event) => setDate(event.target.value)}
+        />
+        <Input
+          id="name"
+          type="text"
+          label="Patient name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          placeholder="Full name of the patient"
+        />
       </div>
 
       <div className="mt-5">
-        <span className={labelClass}>Time slot</span>
+        <span className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Time slot</span>
         <div className="flex flex-wrap gap-2">
           {TIME_SLOTS.map((time) => (
             <button
@@ -181,36 +164,27 @@ export default function BookingForm({ initialDoctorId = "" }) {
       </div>
 
       <div className="mt-5 grid gap-5 sm:grid-cols-2">
-        <div>
-          <label htmlFor="phone" className={labelClass}>Phone number</label>
-          <input
-            id="phone"
-            type="tel"
-            value={phone}
-            onChange={(event) => setPhone(event.target.value)}
-            className={inputClass}
-            placeholder="03xx-xxxxxxx"
-          />
-        </div>
-        <div>
-          <label htmlFor="reason" className={labelClass}>Reason for visit (optional)</label>
-          <input
-            id="reason"
-            type="text"
-            value={reason}
-            onChange={(event) => setReason(event.target.value)}
-            className={inputClass}
-            placeholder="e.g. Regular check-up"
-          />
-        </div>
+        <Input
+          id="phone"
+          type="tel"
+          label="Phone number"
+          value={phone}
+          onChange={(event) => setPhone(event.target.value)}
+          placeholder="03xx-xxxxxxx"
+        />
+        <Input
+          id="reason"
+          type="text"
+          label="Reason for visit (optional)"
+          value={reason}
+          onChange={(event) => setReason(event.target.value)}
+          placeholder="e.g. Regular check-up"
+        />
       </div>
 
-      <button
-        type="submit"
-        className="mt-6 w-full rounded-xl bg-mint-400 px-4 py-3 font-semibold text-navy-950 shadow-glow transition hover:bg-mint-300"
-      >
+      <Button type="submit" size="lg" className="mt-6 w-full">
         Confirm Booking Request
-      </button>
+      </Button>
       <p className="mt-3 text-center text-xs text-slate-500">
         No payment now - consultation fee is paid at the clinic.
       </p>

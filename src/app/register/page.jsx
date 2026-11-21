@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Button, Input } from "@/components/ui";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -59,10 +60,6 @@ export default function RegisterPage() {
     }
   }
 
-  const inputClass =
-    "w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-navy-900 px-3.5 py-2.5 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:border-mint-400/60 focus:outline-none focus:ring-2 focus:ring-mint-400/30";
-  const labelClass = "mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300";
-
   return (
     <section className="mx-auto flex max-w-md flex-col px-4 py-16">
       <h1 className="text-center font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
@@ -81,39 +78,20 @@ export default function RegisterPage() {
             {error}
           </p>
         )}
-        <div>
-          <label htmlFor="name" className={labelClass}>Full name</label>
-          <input id="name" name="name" type="text" required value={form.name}
-            onChange={handleChange} className={inputClass} placeholder="Your full name" />
-        </div>
-        <div>
-          <label htmlFor="email" className={labelClass}>Email</label>
-          <input id="email" name="email" type="email" required value={form.email}
-            onChange={handleChange} className={inputClass} placeholder="you@example.com" />
-        </div>
-        <div>
-          <label htmlFor="phone" className={labelClass}>Phone (optional)</label>
-          <input id="phone" name="phone" type="tel" value={form.phone}
-            onChange={handleChange} className={inputClass} placeholder="03xx-xxxxxxx" />
-        </div>
-        <div>
-          <label htmlFor="password" className={labelClass}>Password</label>
-          <input id="password" name="password" type="password" required value={form.password}
-            onChange={handleChange} className={inputClass} placeholder="At least 6 characters" />
-        </div>
-        <div>
-          <label htmlFor="confirmPassword" className={labelClass}>Confirm password</label>
-          <input id="confirmPassword" name="confirmPassword" type="password" required
-            value={form.confirmPassword} onChange={handleChange} className={inputClass}
-            placeholder="Repeat your password" />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-xl bg-mint-400 px-4 py-2.5 font-semibold text-navy-950 transition hover:bg-mint-300 disabled:opacity-60"
-        >
+        <Input id="name" name="name" type="text" label="Full name" required value={form.name}
+          onChange={handleChange} placeholder="Your full name" />
+        <Input id="email" name="email" type="email" label="Email" required value={form.email}
+          onChange={handleChange} placeholder="you@example.com" />
+        <Input id="phone" name="phone" type="tel" label="Phone (optional)" value={form.phone}
+          onChange={handleChange} placeholder="03xx-xxxxxxx" />
+        <Input id="password" name="password" type="password" label="Password" required value={form.password}
+          onChange={handleChange} placeholder="At least 6 characters" />
+        <Input id="confirmPassword" name="confirmPassword" type="password" label="Confirm password" required
+          value={form.confirmPassword} onChange={handleChange}
+          placeholder="Repeat your password" />
+        <Button type="submit" loading={loading} className="w-full">
           {loading ? "Creating account..." : "Register"}
-        </button>
+        </Button>
         <p className="text-center text-sm text-slate-600 dark:text-slate-400">
           Already have an account?{" "}
           <Link href="/login" className="font-medium text-mint-600 dark:text-mint-300 hover:text-mint-700 dark:hover:text-mint-200">

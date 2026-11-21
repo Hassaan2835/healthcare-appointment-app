@@ -20,7 +20,7 @@ Goal: 3-5 real commits every day
 - [x] Day 11: Patient Dashboard
 - [x] Day 12: Admin Dashboard UI
 - [x] Day 13: Dark mode + Responsive fixes
-- [ ] Day 14: Reusable components
+- [x] Day 14: Reusable components
 
 ## Week 3 - Backend APIs (7 - 13 Nov)
 - [ ] Day 15: API - GET doctors

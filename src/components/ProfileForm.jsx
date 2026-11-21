@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button, Input } from "@/components/ui";
 
 export default function ProfileForm({ initialName, initialPhone }) {
   const router = useRouter();
@@ -39,13 +40,7 @@ export default function ProfileForm({ initialName, initialPhone }) {
     }
   }
 
-  // Day 13: unified with the mint/navy theme (was teal) and given
-  // light + dark classes like the rest of the app.
-  const inputClass =
-    "w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-slate-900 placeholder:text-slate-500 focus:border-mint-500/60 focus:outline-none focus:ring-2 focus:ring-mint-400/30 dark:border-white/10 dark:bg-navy-900 dark:text-slate-100";
-  const labelClass =
-    "mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300";
-
+  // Day 14: fields and submit button now use the shared ui primitives.
   return (
     <form
       onSubmit={handleSubmit}
@@ -58,24 +53,14 @@ export default function ProfileForm({ initialName, initialPhone }) {
       {error && (
         <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-300">{error}</p>
       )}
-      <div>
-        <label htmlFor="profile-name" className={labelClass}>Full name</label>
-        <input id="profile-name" type="text" required value={name}
-          onChange={(event) => setName(event.target.value)} className={inputClass} />
-      </div>
-      <div>
-        <label htmlFor="profile-phone" className={labelClass}>Phone</label>
-        <input id="profile-phone" type="tel" value={phone}
-          onChange={(event) => setPhone(event.target.value)} className={inputClass}
-          placeholder="03xx-xxxxxxx" />
-      </div>
-      <button
-        type="submit"
-        disabled={loading}
-        className="rounded-xl bg-mint-400 px-5 py-2.5 font-semibold text-navy-950 transition hover:bg-mint-300 disabled:opacity-60"
-      >
+      <Input id="profile-name" type="text" label="Full name" required value={name}
+        onChange={(event) => setName(event.target.value)} />
+      <Input id="profile-phone" type="tel" label="Phone" value={phone}
+        onChange={(event) => setPhone(event.target.value)}
+        placeholder="03xx-xxxxxxx" />
+      <Button type="submit" loading={loading}>
         {loading ? "Saving..." : "Save changes"}
-      </button>
+      </Button>
     </form>
   );
 }

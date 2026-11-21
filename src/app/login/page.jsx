@@ -4,6 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Button, Input } from "@/components/ui";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -34,10 +35,6 @@ export default function LoginPage() {
     router.refresh();
   }
 
-  const inputClass =
-    "w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-navy-900 px-3.5 py-2.5 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:border-mint-400/60 focus:outline-none focus:ring-2 focus:ring-mint-400/30";
-  const labelClass = "mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300";
-
   return (
     <section className="mx-auto flex max-w-md flex-col px-4 py-16">
       <h1 className="text-center font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
@@ -56,41 +53,27 @@ export default function LoginPage() {
             {error}
           </p>
         )}
-        <div>
-          <label htmlFor="email" className={labelClass}>
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            required
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            className={inputClass}
-            placeholder="you@example.com"
-          />
-        </div>
-        <div>
-          <label htmlFor="password" className={labelClass}>
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            required
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            className={inputClass}
-            placeholder="Your password"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-xl bg-mint-400 px-4 py-2.5 font-semibold text-navy-950 transition hover:bg-mint-300 disabled:opacity-60"
-        >
+        <Input
+          id="email"
+          type="email"
+          label="Email"
+          required
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="you@example.com"
+        />
+        <Input
+          id="password"
+          type="password"
+          label="Password"
+          required
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          placeholder="Your password"
+        />
+        <Button type="submit" loading={loading} className="w-full">
           {loading ? "Logging in..." : "Log in"}
-        </button>
+        </Button>
         <p className="text-center text-sm text-slate-600 dark:text-slate-400">
           Do not have an account?{" "}
           <Link href="/register" className="font-medium text-mint-600 dark:text-mint-300 hover:text-mint-700 dark:hover:text-mint-200">

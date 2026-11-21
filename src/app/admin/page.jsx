@@ -1,10 +1,10 @@
-import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth-options";
 import prisma from "@/lib/prisma";
 import DashboardStats from "@/components/DashboardStats";
 import AdminAppointmentsTable from "@/components/AdminAppointmentsTable";
+import { Button } from "@/components/ui";
 
 export const metadata = {
   title: "Admin Dashboard | Healthcare Appointment App",
@@ -131,18 +131,10 @@ export default async function AdminDashboardPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link
-            href="/doctors"
-            className="rounded-xl bg-mint-400 px-5 py-2.5 text-sm font-semibold text-navy-950 transition hover:bg-mint-300"
-          >
-            View Doctors
-          </Link>
-          <Link
-            href="/dashboard"
-            className="rounded-xl border border-mint-400/50 px-5 py-2.5 text-sm font-semibold text-mint-600 dark:text-mint-300 transition hover:bg-mint-400 hover:text-navy-950"
-          >
+          <Button href="/doctors">View Doctors</Button>
+          <Button href="/dashboard" variant="outline">
             Patient Dashboard
-          </Link>
+          </Button>
         </div>
       </div>
 

@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth-options";
 import prisma from "@/lib/prisma";
 import DashboardStats from "@/components/DashboardStats";
 import AppointmentCard from "@/components/AppointmentCard";
+import { Button } from "@/components/ui";
 
 export const metadata = {
   title: "My Dashboard | Healthcare Appointment App",
@@ -84,18 +85,10 @@ export default async function DashboardPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link
-            href="/appointments"
-            className="rounded-xl bg-mint-400 px-5 py-2.5 text-sm font-semibold text-navy-950 transition hover:bg-mint-300"
-          >
-            Book Appointment
-          </Link>
-          <Link
-            href="/doctors"
-            className="rounded-xl border border-mint-400/50 px-5 py-2.5 text-sm font-semibold text-mint-600 dark:text-mint-300 transition hover:bg-mint-400 hover:text-navy-950"
-          >
+          <Button href="/appointments">Book Appointment</Button>
+          <Button href="/doctors" variant="outline">
             Find Doctors
-          </Link>
+          </Button>
         </div>
       </div>
 
