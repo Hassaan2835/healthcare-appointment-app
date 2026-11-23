@@ -19,9 +19,11 @@ export default function DoctorCard({ doctor }) {
         <div>
           <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{doctor.name}</h3>
           <p className="text-sm font-medium text-mint-600 dark:text-mint-300">{doctor.specialty}</p>
-          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-            {doctor.hospital} - {doctor.city}
-          </p>
+          {doctor.hospital || doctor.city ? (
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+              {[doctor.hospital, doctor.city].filter(Boolean).join(" - ")}
+            </p>
+          ) : null}
         </div>
       </div>
 
@@ -29,7 +31,10 @@ export default function DoctorCard({ doctor }) {
         <div className="rounded-xl bg-slate-100 dark:bg-navy-900/80 px-2 py-2.5">
           <dt className="text-xs text-slate-600 dark:text-slate-400">Rating</dt>
           <dd className="mt-0.5 font-semibold text-slate-900 dark:text-white">
-            {doctor.rating} <span className="text-slate-600 dark:text-slate-400">({doctor.reviews})</span>
+            {doctor.rating ?? "—"}
+            {doctor.reviews ? (
+              <span className="text-slate-600 dark:text-slate-400"> ({doctor.reviews})</span>
+            ) : null}
           </dd>
         </div>
         <div className="rounded-xl bg-slate-100 dark:bg-navy-900/80 px-2 py-2.5">

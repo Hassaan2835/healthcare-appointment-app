@@ -1,5 +1,7 @@
 // Sample doctor data for the listing and search pages.
-// Week 3 will replace this with real records from the database API.
+// Day 15: this is now the fallback source for GET /api/doctors — the API
+// reads real records from the database first and only uses these when the
+// database cannot be reached.
 
 export const SPECIALTIES = [
   "General Consultation",

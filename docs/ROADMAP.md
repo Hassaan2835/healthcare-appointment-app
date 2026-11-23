@@ -23,7 +23,7 @@ Goal: 3-5 real commits every day
 - [x] Day 14: Reusable components
 
 ## Week 3 - Backend APIs (7 - 13 Nov)
-- [ ] Day 15: API - GET doctors
+- [x] Day 15: API - GET doctors
 - [ ] Day 16: API - POST booking
 - [ ] Day 17: API - Cancel / Reschedule
 - [ ] Day 18: Validation (Zod) + Error handling
