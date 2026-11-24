@@ -18,6 +18,8 @@ export default function BookingForm({ initialDoctorId = "" }) {
   const [phone, setPhone] = useState("");
   const [reason, setReason] = useState("");
   const [error, setError] = useState("");
+  const [needsLogin, setNeedsLogin] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [booked, setBooked] = useState(null);
 
   const doctor = useMemo(
@@ -27,9 +29,13 @@ export default function BookingForm({ initialDoctorId = "" }) {
 
   const today = new Date().toISOString().split("T")[0];
 
-  function handleSubmit(event) {
+  // Day 16: the form now books through POST /api/appointments instead
+  // of only pretending to. The booking is created for the signed-in
+  // user, so a 401 means the visitor has to log in first.
+  async function handleSubmit(event) {
     event.preventDefault();
     setError("");
+    setNeedsLogin(false);
 
     if (!doctor) {
       setError("Please select a doctor.");
@@ -56,7 +62,33 @@ export default function BookingForm({ initialDoctorId = "" }) {
       return;
     }
 
-    setBooked({ doctor, date, slot, name, phone, reason });
+    setSubmitting(true);
+    try {
+      const response = await fetch("/api/appointments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ doctorId, date, slot, reason }),
+      });
+      const data = await response.json().catch(() => ({}));
+
+      if (response.status === 401) {
+        setNeedsLogin(true);
+        setError("Please log in to book an appointment.");
+        return;
+      }
+      if (!response.ok) {
+        setError(
+          data?.error || "Booking failed. Please try again."
+        );
+        return;
+      }
+
+      setBooked({ appointment: data.appointment, doctor, date, slot, name, phone, reason });
+    } catch {
+      setError("Booking is unavailable right now. Please try again later.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (booked) {
@@ -71,12 +103,15 @@ export default function BookingForm({ initialDoctorId = "" }) {
           Appointment Request Sent
         </h2>
         <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-          {booked.name}, your visit with {booked.doctor.name} ({booked.doctor.specialty})
-          is requested for {booked.date} at {booked.slot}. The clinic will confirm
-          shortly on {booked.phone}.
+          {booked.name}, your visit with{" "}
+          {booked.appointment.doctorName || booked.doctor.name}
+          {booked.appointment.specialty ? ` (${booked.appointment.specialty})` : ""}
+          {" "}is booked for {booked.appointment.date.slice(0, 10)} at{" "}
+          {booked.appointment.slot}. Status: {booked.appointment.status}.
+          The clinic will confirm shortly on {booked.phone}.
         </p>
         <p className="mt-3 text-xs text-slate-500">
-          Online booking confirmation goes live with our booking system update.
+          Your booking is saved — you can see it on your dashboard.
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <Button href="/doctors" variant="outline">
@@ -96,9 +131,14 @@ export default function BookingForm({ initialDoctorId = "" }) {
       className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-800/80 p-6 shadow-sm dark:shadow-card sm:p-7"
     >
       {error && (
-        <p className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-300">
-          {error}
-        </p>
+        <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-300">
+          <p>{error}</p>
+          {needsLogin && (
+            <Button href="/login" size="sm" className="mt-3">
+              Log In
+            </Button>
+          )}
+        </div>
       )}
 
       <Select
@@ -182,8 +222,8 @@ export default function BookingForm({ initialDoctorId = "" }) {
         />
       </div>
 
-      <Button type="submit" size="lg" className="mt-6 w-full">
-        Confirm Booking Request
+      <Button type="submit" size="lg" className="mt-6 w-full" loading={submitting}>
+        {submitting ? "Booking..." : "Confirm Booking Request"}
       </Button>
       <p className="mt-3 text-center text-xs text-slate-500">
         No payment now - consultation fee is paid at the clinic.

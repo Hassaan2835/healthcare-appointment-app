@@ -17,9 +17,8 @@ export const metadata = {
 // Server component, protected by both the auth middleware and the
 // session check below. Reads real appointments from Prisma.
 //
-// Note: BookingForm is still UI-only until Day 16 (POST /api/appointments),
-// so a fresh account correctly shows the empty state below until
-// bookings are saved to the database.
+// Day 16: bookings are saved through POST /api/appointments, so a real
+// booking now shows up here instead of the empty state below.
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
 
