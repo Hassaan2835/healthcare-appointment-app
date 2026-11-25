@@ -95,6 +95,58 @@ export function validateBookingBody(body) {
   };
 }
 
+// Validate a reschedule request body. Reuses the booking date/slot
+// rules: a future date is required, the slot is optional, and reason /
+// notes may be updated alongside the new time. Returns { value } or
+// { errors }, first error first.
+export function validateRescheduleBody(body) {
+  const errors = [];
+  const date = typeof body?.date === "string" ? body.date.trim() : "";
+  const slot = typeof body?.slot === "string" ? body.slot.trim() : "";
+  const reason = typeof body?.reason === "string" ? body.reason.trim() : "";
+  const notes = typeof body?.notes === "string" ? body.notes.trim() : "";
+
+  if (!date) {
+    errors.push("Please choose a new appointment date.");
+  } else if (!DATE_PATTERN.test(date)) {
+    errors.push("Please choose a valid appointment date.");
+  }
+  if (slot && !parseSlot(slot)) {
+    errors.push("Please pick a valid time slot.");
+  }
+  if (reason.length > 500) {
+    errors.push("Reason for visit is too long (max 500 characters).");
+  }
+  if (notes.length > 1000) {
+    errors.push("Notes are too long (max 1000 characters).");
+  }
+
+  if (errors.length > 0) return { errors };
+
+  const dateTime = combineDateAndSlot(date, slot || null);
+  if (!dateTime) {
+    return { errors: ["Please choose a valid appointment date."] };
+  }
+  if (dateTime.getTime() <= Date.now()) {
+    return { errors: ["Please choose a future date and time."] };
+  }
+
+  return {
+    value: { date, slot: slot || null, dateTime, reason, notes, hasReason: typeof body?.reason === "string", hasNotes: typeof body?.notes === "string" },
+  };
+}
+
+// Only the patient who booked an appointment — or an admin — may
+// cancel or reschedule it. Doctors cannot change a patient's booking
+// from here; that stays with the patient and the admin desk.
+export function canManageAppointment(session, appointment) {
+  if (!session?.user?.id || !appointment) return false;
+  return (
+    appointment.patientId === session.user.id ||
+    session.user.role === "ADMIN"
+  );
+}
+
 export function serializeAppointment(appointment) {
   return {
     id: appointment.id,

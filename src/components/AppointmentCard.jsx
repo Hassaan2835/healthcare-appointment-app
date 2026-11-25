@@ -6,6 +6,7 @@
 // (StatusBadge, Card) instead of local copies of the same styles.
 
 import { Card, StatusBadge } from "@/components/ui";
+import AppointmentActions from "@/components/AppointmentActions";
 
 function formatDate(value) {
   return new Date(value).toLocaleDateString("en-GB", {
@@ -41,7 +42,14 @@ export default function AppointmentCard({ appointment }) {
         </div>
       </div>
 
-      <StatusBadge status={appointment.status} />
+      <div className="flex shrink-0 flex-col items-start gap-3 sm:items-end">
+        <StatusBadge status={appointment.status} />
+        {/* Day 17: only upcoming bookings can be changed — cancelled
+            and completed ones stay as history. */}
+        {(appointment.status === "PENDING" || appointment.status === "CONFIRMED") && (
+          <AppointmentActions appointmentId={appointment.id} currentDate={new Date(appointment.date).toISOString()} />
+        )}
+      </div>
     </Card>
   );
 }
