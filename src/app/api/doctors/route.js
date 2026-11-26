@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import {
-  parseDoctorQuery,
   serializeDbDoctor,
   serializeSampleDoctor,
   filterSampleDoctors,
   paginate,
 } from "@/lib/doctors-api";
+import { doctorQuerySchema, validateBody } from "@/lib/validation";
+import { handleApiError } from "@/lib/api-errors";
 
 // GET /api/doctors — list doctors from the database.
-// Query params:
+// Query params (validated by doctorQuerySchema, Zod, Day 18 —
+// invalid values fall back to safe defaults instead of erroring):
 //   q           search by doctor name, specialty, hospital or city
 //   specialty   exact specialty name (e.g. "Cardiology"), "All" means any
 //   available   "true" | "false" — only doctors taking appointments
@@ -20,9 +22,11 @@ import {
 // endpoint falls back to the built-in sample data ("sample") so the
 // listing page keeps working in a checkout without DATABASE_URL.
 export async function GET(request) {
-  const { q, specialty, available, page, limit } = parseDoctorQuery(
-    request.nextUrl.searchParams
+  const { value: query } = validateBody(
+    doctorQuerySchema,
+    Object.fromEntries(request.nextUrl.searchParams.entries())
   );
+  const { q, specialty, available, page, limit } = query;
 
   try {
     const where = {};

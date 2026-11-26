@@ -1,52 +1,39 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
+import { registerSchema, validateBody } from "@/lib/validation";
+import {
+  ApiError,
+  handleApiError,
+  parseJsonBody,
+  validationError,
+} from "@/lib/api-errors";
 
+// POST /api/register — create a patient account.
+// Body is validated by registerSchema (Zod, Day 18): name, a valid
+// email, a password of at least 6 characters, optional phone.
+// Errors are { error, details? } — see src/lib/api-errors.js.
 export async function POST(request) {
   try {
-    const body = await request.json();
-    const name = (body?.name || "").trim();
-    const email = (body?.email || "").trim().toLowerCase();
-    const password = body?.password || "";
-    const phone = (body?.phone || "").trim();
-
-    if (name.length < 2) {
-      return NextResponse.json(
-        { error: "Please enter your full name." },
-        { status: 400 }
-      );
-    }
-    if (!email.includes("@") || email.length < 5) {
-      return NextResponse.json(
-        { error: "Please enter a valid email address." },
-        { status: 400 }
-      );
-    }
-    if (password.length < 6) {
-      return NextResponse.json(
-        { error: "Password must be at least 6 characters long." },
-        { status: 400 }
-      );
-    }
+    const body = await parseJsonBody(request);
+    const { value, errors } = validateBody(registerSchema, body);
+    if (errors) throw validationError(errors);
 
     const existingUser = await prisma.user.findUnique({
-      where: { email },
+      where: { email: value.email },
     });
     if (existingUser) {
-      return NextResponse.json(
-        { error: "An account with this email already exists." },
-        { status: 409 }
-      );
+      throw new ApiError(409, "An account with this email already exists.");
     }
 
-    const hashedPassword = await hashPassword(password);
+    const hashedPassword = await hashPassword(value.password);
 
     const user = await prisma.user.create({
       data: {
-        name,
-        email,
+        name: value.name,
+        email: value.email,
         password: hashedPassword,
-        phone: phone || null,
+        phone: value.phone || null,
         role: "PATIENT",
       },
       select: {
@@ -63,10 +50,6 @@ export async function POST(request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Register error:", error);
-    return NextResponse.json(
-      { error: "Something went wrong. Please try again." },
-      { status: 500 }
-    );
+    return handleApiError(error, "Something went wrong. Please try again.");
   }
 }

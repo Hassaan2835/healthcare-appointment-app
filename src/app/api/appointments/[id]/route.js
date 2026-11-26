@@ -1,22 +1,27 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth-options";
 import prisma from "@/lib/prisma";
 import {
-  validateRescheduleBody,
   canManageAppointment,
   serializeAppointment,
 } from "@/lib/appointments-api";
+import { rescheduleSchema, validateBody } from "@/lib/validation";
+import {
+  ApiError,
+  handleApiError,
+  parseJsonBody,
+  requireSession,
+  validationError,
+} from "@/lib/api-errors";
 
 // PATCH / DELETE /api/appointments/[id] — reschedule or cancel one
 // booking. Auth required, and only the patient who booked it (or an
 // admin) may change it.
 //
 // PATCH — reschedule. Body: { date ("YYYY-MM-DD"), slot ("HH:MM AM/PM",
-// optional), reason?, notes? } — reason / notes are only overwritten
-// when they are present in the body.
+// optional), reason?, notes? } — validated by rescheduleSchema (Zod,
+// Day 18); reason / notes are only overwritten when present in the body.
 //   200  rescheduled — { message, appointment }
-//   400  missing or invalid fields — { error }
+//   400  missing or invalid fields — { error, details }
 //   401  not logged in — { error }
 //   403  not your appointment — { error }
 //   404  no appointment with that id — { error }
@@ -32,7 +37,8 @@ import {
 //
 // Only PENDING or CONFIRMED appointments can be cancelled or
 // rescheduled: a CANCELLED appointment is already closed, and a
-// COMPLETED visit is history.
+// COMPLETED visit is history. All errors are { error, details? } —
+// see src/lib/api-errors.js.
 
 const CHANGEABLE = ["PENDING", "CONFIRMED"];
 
@@ -47,63 +53,34 @@ async function loadAppointment(id) {
   });
 }
 
-function notFound() {
-  return NextResponse.json({ error: "Appointment not found." }, { status: 404 });
-}
-
-function forbidden() {
-  return NextResponse.json(
-    { error: "You can only change your own appointments." },
-    { status: 403 }
-  );
-}
-
-function notChangeable(appointment) {
-  return NextResponse.json(
-    {
-      error:
-        appointment.status === "CANCELLED"
-          ? "This appointment is already cancelled."
-          : "This appointment can no longer be changed.",
-    },
-    { status: 409 }
-  );
-}
-
-async function authorize(request) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return {
-      error: NextResponse.json(
-        { error: "You must be logged in to manage appointments." },
-        { status: 401 }
-      ),
-    };
+function loadOrThrow(appointment, session) {
+  if (!appointment) {
+    throw new ApiError(404, "Appointment not found.");
   }
-  return { session };
+  if (!canManageAppointment(session, appointment)) {
+    throw new ApiError(403, "You can only change your own appointments.");
+  }
+  if (!CHANGEABLE.includes(appointment.status)) {
+    throw new ApiError(
+      409,
+      appointment.status === "CANCELLED"
+        ? "This appointment is already cancelled."
+        : "This appointment can no longer be changed."
+    );
+  }
+  return appointment;
 }
 
 export async function PATCH(request, { params }) {
-  const { session, error } = await authorize(request);
-  if (error) return error;
-
-  let body;
   try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
-  }
+    const session = await requireSession(
+      "You must be logged in to manage appointments."
+    );
+    const body = await parseJsonBody(request);
+    const { value, errors } = validateBody(rescheduleSchema, body);
+    if (errors) throw validationError(errors);
 
-  const { value, errors } = validateRescheduleBody(body);
-  if (errors.length > 0) {
-    return NextResponse.json({ error: errors[0] }, { status: 400 });
-  }
-
-  try {
-    const appointment = await loadAppointment(params.id);
-    if (!appointment) return notFound();
-    if (!canManageAppointment(session, appointment)) return forbidden();
-    if (!CHANGEABLE.includes(appointment.status)) return notChangeable(appointment);
+    const appointment = loadOrThrow(await loadAppointment(params.id), session);
 
     // The new time must be free for this doctor — same rule as booking,
     // but the appointment being moved does not clash with itself.
@@ -116,9 +93,9 @@ export async function PATCH(request, { params }) {
       },
     });
     if (clash) {
-      return NextResponse.json(
-        { error: "That time slot is already booked. Please pick another time." },
-        { status: 409 }
+      throw new ApiError(
+        409,
+        "That time slot is already booked. Please pick another time."
       );
     }
 
@@ -140,23 +117,20 @@ export async function PATCH(request, { params }) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("PATCH /api/appointments/[id] error:", error);
-    return NextResponse.json(
-      { error: "Rescheduling is unavailable right now. Please try again later." },
-      { status: 503 }
+    return handleApiError(
+      error,
+      "Rescheduling is unavailable right now. Please try again later.",
+      503
     );
   }
 }
 
 export async function DELETE(request, { params }) {
-  const { session, error } = await authorize(request);
-  if (error) return error;
-
   try {
-    const appointment = await loadAppointment(params.id);
-    if (!appointment) return notFound();
-    if (!canManageAppointment(session, appointment)) return forbidden();
-    if (!CHANGEABLE.includes(appointment.status)) return notChangeable(appointment);
+    const session = await requireSession(
+      "You must be logged in to manage appointments."
+    );
+    const appointment = loadOrThrow(await loadAppointment(params.id), session);
 
     const updated = await prisma.appointment.update({
       where: { id: appointment.id },
@@ -172,10 +146,10 @@ export async function DELETE(request, { params }) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("DELETE /api/appointments/[id] error:", error);
-    return NextResponse.json(
-      { error: "Cancellation is unavailable right now. Please try again later." },
-      { status: 503 }
+    return handleApiError(
+      error,
+      "Cancellation is unavailable right now. Please try again later.",
+      503
     );
   }
 }

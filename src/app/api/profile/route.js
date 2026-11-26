@@ -1,37 +1,28 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth-options";
 import prisma from "@/lib/prisma";
+import { profileSchema, validateBody } from "@/lib/validation";
+import {
+  handleApiError,
+  parseJsonBody,
+  requireSession,
+  validationError,
+} from "@/lib/api-errors";
 
-// Update the signed-in user's own profile (name and phone only).
-// Email and role can never be changed through this route.
+// PATCH /api/profile — update the signed-in user's own profile
+// (name and phone only). Body is validated by profileSchema (Zod,
+// Day 18). Email and role can never be changed through this route —
+// they are not in the schema, so Zod strips them before Prisma sees
+// the data. Errors are { error, details? } — see api-errors.js.
 export async function PATCH(request) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "You must be logged in." }, { status: 401 });
-  }
-
   try {
-    const body = await request.json();
-    const name = (body?.name || "").trim();
-    const phone = (body?.phone || "").trim();
-
-    if (name.length < 2) {
-      return NextResponse.json(
-        { error: "Please enter your full name." },
-        { status: 400 }
-      );
-    }
-    if (phone && phone.length < 7) {
-      return NextResponse.json(
-        { error: "Please enter a valid phone number." },
-        { status: 400 }
-      );
-    }
+    const session = await requireSession("You must be logged in.");
+    const body = await parseJsonBody(request);
+    const { value, errors } = validateBody(profileSchema, body);
+    if (errors) throw validationError(errors);
 
     const user = await prisma.user.update({
       where: { id: session.user.id },
-      data: { name, phone: phone || null },
+      data: { name: value.name, phone: value.phone || null },
       select: {
         id: true,
         name: true,
@@ -44,10 +35,6 @@ export async function PATCH(request) {
 
     return NextResponse.json({ message: "Profile updated.", user });
   } catch (error) {
-    console.error("Profile update error:", error);
-    return NextResponse.json(
-      { error: "Something went wrong. Please try again." },
-      { status: 500 }
-    );
+    return handleApiError(error, "Something went wrong. Please try again.");
   }
 }

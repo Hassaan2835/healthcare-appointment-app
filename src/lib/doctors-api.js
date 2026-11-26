@@ -8,26 +8,6 @@ import { doctors as sampleDoctors } from "@/data/doctors";
 export const DEFAULT_LIMIT = 20;
 export const MAX_LIMIT = 50;
 
-// Parse and validate the query string shared by the list endpoint.
-// Invalid values fall back to safe defaults instead of erroring.
-export function parseDoctorQuery(searchParams) {
-  const q = (searchParams.get("q") || "").trim();
-  const specialty = (searchParams.get("specialty") || "").trim();
-  const availableParam = (searchParams.get("available") || "").trim().toLowerCase();
-  const available =
-    availableParam === "true" ? true : availableParam === "false" ? false : null;
-
-  const rawPage = Number.parseInt(searchParams.get("page") || "1", 10);
-  const rawLimit = Number.parseInt(searchParams.get("limit") || String(DEFAULT_LIMIT), 10);
-  const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
-  const limit =
-    Number.isFinite(rawLimit) && rawLimit > 0
-      ? Math.min(rawLimit, MAX_LIMIT)
-      : DEFAULT_LIMIT;
-
-  return { q, specialty, available, page, limit };
-}
-
 // One public shape for a doctor, whichever source it came from.
 // Fields the database does not store yet (hospital, city, rating, ...) are
 // null on database records and filled in on sample records.

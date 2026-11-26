@@ -1,24 +1,27 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth-options";
 import prisma from "@/lib/prisma";
+import { serializeAppointment } from "@/lib/appointments-api";
+import { bookingSchema, validateBody } from "@/lib/validation";
 import {
-  validateBookingBody,
-  serializeAppointment,
-} from "@/lib/appointments-api";
+  ApiError,
+  handleApiError,
+  parseJsonBody,
+  requireSession,
+  validationError,
+} from "@/lib/api-errors";
 
 // POST /api/appointments — book a visit with a doctor.
 // Auth required: the appointment is always created for the signed-in
 // user, so nobody can book on someone else's behalf.
 //
 // Body: { doctorId, date ("YYYY-MM-DD"), slot ("HH:MM AM/PM", optional),
-//         reason?, notes? }
+//         reason?, notes? } — validated by bookingSchema (Zod, Day 18).
 // The slot is folded into the stored datetime (the Appointment model
 // has no separate slot column); see src/lib/appointments-api.js.
 //
-// Responses:
+// Responses (all errors are { error, details? } — see api-errors.js):
 //   201  booking created — { message, appointment }
-//   400  missing or invalid fields — { error }
+//   400  missing or invalid fields — { error, details }
 //   401  not logged in — { error }
 //   404  doctorId is not a doctor in the system — { error }
 //   409  that doctor already has a booking at this date and time — { error }
@@ -31,41 +34,22 @@ import {
 // when the database is down the endpoint answers 503 instead of
 // pretending the booking succeeded.
 export async function POST(request) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json(
-      { error: "You must be logged in to book an appointment." },
-      { status: 401 }
-    );
-  }
-
-  let body;
   try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json(
-      { error: "Invalid request body." },
-      { status: 400 }
+    const session = await requireSession(
+      "You must be logged in to book an appointment."
     );
-  }
+    const body = await parseJsonBody(request);
+    const { value, errors } = validateBody(bookingSchema, body);
+    if (errors) throw validationError(errors);
 
-  const { value, errors } = validateBookingBody(body);
-  if (errors.length > 0) {
-    return NextResponse.json({ error: errors[0] }, { status: 400 });
-  }
-
-  try {
     const doctor = await prisma.doctor.findUnique({
       where: { id: value.doctorId },
       include: { user: { select: { name: true } } },
     });
     if (!doctor) {
-      return NextResponse.json(
-        {
-          error:
-            "Doctor not found. Online booking is only available for doctors listed in the system.",
-        },
-        { status: 404 }
+      throw new ApiError(
+        404,
+        "Doctor not found. Online booking is only available for doctors listed in the system."
       );
     }
 
@@ -77,9 +61,9 @@ export async function POST(request) {
       },
     });
     if (clash) {
-      return NextResponse.json(
-        { error: "That time slot is already booked. Please pick another time." },
-        { status: 409 }
+      throw new ApiError(
+        409,
+        "That time slot is already booked. Please pick another time."
       );
     }
 
@@ -104,10 +88,10 @@ export async function POST(request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("POST /api/appointments error:", error);
-    return NextResponse.json(
-      { error: "Booking is unavailable right now. Please try again later." },
-      { status: 503 }
+    return handleApiError(
+      error,
+      "Booking is unavailable right now. Please try again later.",
+      503
     );
   }
 }
