@@ -41,6 +41,24 @@ npm install
 npm run dev
 ```
 
+## Email notifications
+
+Booking, rescheduling and cancelling an appointment emails the patient
+a confirmation (see `src/lib/email.js`). Configure any SMTP provider
+in `.env` — copy `.env.example` for the full list:
+
+```bash
+SMTP_HOST="smtp.example.com"
+SMTP_PORT="587"
+SMTP_USER="you@example.com"
+SMTP_PASS="your-smtp-password"
+EMAIL_FROM="Healthcare App <no-reply@example.com>"
+```
+
+Without SMTP settings the app still works: the email is skipped and
+logged to the console instead, and a failed send never fails the
+booking itself.
+
 ## Author
 
 **Hassaan Khan** — [GitHub](https://github.com/Hassaan2835) | [Portfolio](https://www.hassaankhan.dev)

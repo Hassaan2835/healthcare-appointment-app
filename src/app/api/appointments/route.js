@@ -1,3 +1,4 @@
+import { sendAppointmentEmail } from "@/lib/email";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { serializeAppointment } from "@/lib/appointments-api";
@@ -12,7 +13,9 @@ import {
 
 // POST /api/appointments — book a visit with a doctor.
 // Auth required: the appointment is always created for the signed-in
-// user, so nobody can book on someone else's behalf.
+// user, so nobody can book on someone else's behalf. On success the
+// patient gets a booking-confirmation email (Day 19, src/lib/email.js;
+// skipped with a console note when SMTP is not configured).
 //
 // Body: { doctorId, date ("YYYY-MM-DD"), slot ("HH:MM AM/PM", optional),
 //         reason?, notes? } — validated by bookingSchema (Zod, Day 18).
@@ -77,8 +80,14 @@ export async function POST(request) {
       },
       include: {
         doctor: { include: { user: { select: { name: true } } } },
+        patient: { select: { name: true, email: true } },
       },
     });
+
+    // Day 19: email the patient their booking confirmation. A failed
+    // send never fails the booking — sendAppointmentEmail logs it and
+    // the 201 below still goes out.
+    await sendAppointmentEmail("booked", appointment);
 
     return NextResponse.json(
       {

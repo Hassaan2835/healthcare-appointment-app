@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { sendAppointmentEmail } from "@/lib/email";
 import {
   canManageAppointment,
   serializeAppointment,
@@ -15,7 +16,8 @@ import {
 
 // PATCH / DELETE /api/appointments/[id] — reschedule or cancel one
 // booking. Auth required, and only the patient who booked it (or an
-// admin) may change it.
+// admin) may change it. On success the patient is emailed about the
+// change (Day 19, src/lib/email.js).
 //
 // PATCH — reschedule. Body: { date ("YYYY-MM-DD"), slot ("HH:MM AM/PM",
 // optional), reason?, notes? } — validated by rescheduleSchema (Zod,
@@ -44,6 +46,7 @@ const CHANGEABLE = ["PENDING", "CONFIRMED"];
 
 const includeDoctor = {
   doctor: { include: { user: { select: { name: true } } } },
+  patient: { select: { name: true, email: true } },
 };
 
 async function loadAppointment(id) {
@@ -109,6 +112,10 @@ export async function PATCH(request, { params }) {
       include: includeDoctor,
     });
 
+    // Day 19: tell the patient about the new time. A failed send
+    // never fails the reschedule.
+    await sendAppointmentEmail("rescheduled", updated);
+
     return NextResponse.json(
       {
         message: "Appointment rescheduled.",
@@ -137,6 +144,9 @@ export async function DELETE(request, { params }) {
       data: { status: "CANCELLED" },
       include: includeDoctor,
     });
+
+    // Day 19: confirm the cancellation by email.
+    await sendAppointmentEmail("cancelled", updated);
 
     return NextResponse.json(
       {
