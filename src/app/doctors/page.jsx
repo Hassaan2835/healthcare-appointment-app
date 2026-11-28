@@ -4,12 +4,20 @@ import { useEffect, useMemo, useState } from "react";
 import DoctorCard from "@/components/DoctorCard";
 import Spinner from "@/components/ui/Spinner";
 import { SPECIALTIES } from "@/data/doctors";
+import { SORT_OPTIONS } from "@/lib/doctors-api";
 
 // Day 15: the listing now reads from GET /api/doctors instead of the
 // built-in sample data, so search and specialty filters run server-side.
+// Day 20: advanced filters — fee range, minimum experience, available
+// only, and sorting — all sent to the same API as query params.
 export default function DoctorsPage() {
   const [query, setQuery] = useState("");
   const [specialty, setSpecialty] = useState("All");
+  const [availableOnly, setAvailableOnly] = useState(false);
+  const [minFee, setMinFee] = useState("");
+  const [maxFee, setMaxFee] = useState("");
+  const [minExperience, setMinExperience] = useState("");
+  const [sort, setSort] = useState("newest");
   const [doctors, setDoctors] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -24,6 +32,37 @@ export default function DoctorsPage() {
     return () => clearTimeout(timer);
   }, [debouncedQuery]);
 
+  // Debounce the fee inputs too, so typing a number doesn't refetch
+  // on every keystroke.
+  const debouncedMinFee = useMemo(() => minFee.trim(), [minFee]);
+  const debouncedMaxFee = useMemo(() => maxFee.trim(), [maxFee]);
+  const [debouncedFees, setDebouncedFees] = useState({ min: debouncedMinFee, max: debouncedMaxFee });
+  useEffect(() => {
+    const timer = setTimeout(
+      () => setDebouncedFees({ min: debouncedMinFee, max: debouncedMaxFee }),
+      400
+    );
+    return () => clearTimeout(timer);
+  }, [debouncedMinFee, debouncedMaxFee]);
+
+  const hasActiveFilters =
+    specialty !== "All" ||
+    availableOnly ||
+    debouncedFees.min !== "" ||
+    debouncedFees.max !== "" ||
+    minExperience !== "" ||
+    sort !== "newest";
+
+  function clearAllFilters() {
+    setQuery("");
+    setSpecialty("All");
+    setAvailableOnly(false);
+    setMinFee("");
+    setMaxFee("");
+    setMinExperience("");
+    setSort("newest");
+  }
+
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
@@ -32,6 +71,11 @@ export default function DoctorsPage() {
     const params = new URLSearchParams();
     if (debounced) params.set("q", debounced);
     if (specialty !== "All") params.set("specialty", specialty);
+    if (availableOnly) params.set("available", "true");
+    if (debouncedFees.min !== "") params.set("minFee", debouncedFees.min);
+    if (debouncedFees.max !== "") params.set("maxFee", debouncedFees.max);
+    if (minExperience !== "") params.set("minExperience", minExperience);
+    if (sort !== "newest") params.set("sort", sort);
 
     fetch("/api/doctors?" + params.toString())
       .then((response) => {
@@ -53,7 +97,7 @@ export default function DoctorsPage() {
     return () => {
       cancelled = true;
     };
-  }, [debounced, specialty, reloadKey]);
+  }, [debounced, specialty, availableOnly, debouncedFees, minExperience, sort, reloadKey]);
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-16">
@@ -101,6 +145,95 @@ export default function DoctorsPage() {
         ))}
       </div>
 
+      {/* Day 20: advanced filters — fee range, experience, availability, sort. */}
+      <div className="mx-auto mt-6 max-w-3xl rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-800/60 p-4 shadow-sm dark:shadow-card sm:p-5">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <label htmlFor="min-fee" className="block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+              Min fee (Rs.)
+            </label>
+            <input
+              id="min-fee"
+              type="number"
+              min="0"
+              inputMode="numeric"
+              value={minFee}
+              onChange={(event) => setMinFee(event.target.value)}
+              placeholder="0"
+              className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-800 px-3 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:border-mint-400/60 focus:outline-none focus:ring-2 focus:ring-mint-400/40"
+            />
+          </div>
+          <div>
+            <label htmlFor="max-fee" className="block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+              Max fee (Rs.)
+            </label>
+            <input
+              id="max-fee"
+              type="number"
+              min="0"
+              inputMode="numeric"
+              value={maxFee}
+              onChange={(event) => setMaxFee(event.target.value)}
+              placeholder="Any"
+              className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-800 px-3 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:border-mint-400/60 focus:outline-none focus:ring-2 focus:ring-mint-400/40"
+            />
+          </div>
+          <div>
+            <label htmlFor="min-experience" className="block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+              Experience
+            </label>
+            <select
+              id="min-experience"
+              value={minExperience}
+              onChange={(event) => setMinExperience(event.target.value)}
+              className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-800 px-3 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:border-mint-400/60 focus:outline-none focus:ring-2 focus:ring-mint-400/40"
+            >
+              <option value="">Any experience</option>
+              <option value="5">5+ years</option>
+              <option value="10">10+ years</option>
+              <option value="15">15+ years</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="sort-doctors" className="block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+              Sort by
+            </label>
+            <select
+              id="sort-doctors"
+              value={sort}
+              onChange={(event) => setSort(event.target.value)}
+              className="mt-1.5 w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-navy-800 px-3 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:border-mint-400/60 focus:outline-none focus:ring-2 focus:ring-mint-400/40"
+            >
+              {SORT_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+            <input
+              type="checkbox"
+              checked={availableOnly}
+              onChange={(event) => setAvailableOnly(event.target.checked)}
+              className="h-4 w-4 rounded accent-[#5eead4]"
+            />
+            Available for appointments only
+          </label>
+          {hasActiveFilters && (
+            <button
+              type="button"
+              onClick={clearAllFilters}
+              className="rounded-xl border border-mint-400/50 px-4 py-2 text-sm font-medium text-mint-600 dark:text-mint-300 transition hover:bg-mint-400 hover:text-navy-950"
+            >
+              Clear all filters
+            </button>
+          )}
+        </div>
+      </div>
+
       {loading ? (
         <div className="mt-16 flex flex-col items-center gap-3 text-slate-600 dark:text-slate-400">
           <Spinner size="lg" label="Loading doctors…" />
@@ -139,10 +272,7 @@ export default function DoctorsPage() {
               </p>
               <button
                 type="button"
-                onClick={() => {
-                  setQuery("");
-                  setSpecialty("All");
-                }}
+                onClick={clearAllFilters}
                 className="mt-4 rounded-xl border border-mint-400/50 px-4 py-2 text-sm font-medium text-mint-600 dark:text-mint-300 transition hover:bg-mint-400 hover:text-navy-950"
               >
                 Clear search and filters

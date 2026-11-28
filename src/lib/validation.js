@@ -178,6 +178,10 @@ export const profileSchema = z
 // GET /api/doctors query string — lenient by design: invalid values
 // fall back to safe defaults instead of erroring, as before.
 //   q, specialty: free text · available: "true" | "false"
+//   minFee / maxFee: consultation fee range in Rs. (a max below the
+//     min is ignored) · minExperience: minimum years of experience
+//   sort: "fee-asc" | "fee-desc" | "experience" | "newest"
+//     (anything else falls back to "newest", the default order)
 //   page: >= 1, defaults to 1 · limit: 1-50, defaults to 20
 export const doctorQuerySchema = z.object({
   q: z.string().trim().default(""),
@@ -186,10 +190,41 @@ export const doctorQuerySchema = z.object({
     .string()
     .trim()
     .toLowerCase()
+    .optional()
     .transform((value) =>
       value === "true" ? true : value === "false" ? false : null
+    ),
+  minFee: z
+    .string()
+    .optional()
+    .transform((value) => {
+      const fee = Number.parseInt(value || "", 10);
+      return Number.isFinite(fee) && fee >= 0 ? fee : null;
+    }),
+  maxFee: z
+    .string()
+    .optional()
+    .transform((value) => {
+      const fee = Number.parseInt(value || "", 10);
+      return Number.isFinite(fee) && fee >= 0 ? fee : null;
+    }),
+  minExperience: z
+    .string()
+    .optional()
+    .transform((value) => {
+      const years = Number.parseInt(value || "", 10);
+      return Number.isFinite(years) && years >= 0 ? years : null;
+    }),
+  sort: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .transform((value) =>
+      ["fee-asc", "fee-desc", "experience", "newest"].includes(value)
+        ? value
+        : "newest"
     )
-    .default(null),
+    .default("newest"),
   page: z
     .string()
     .optional()

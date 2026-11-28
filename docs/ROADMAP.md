@@ -28,7 +28,7 @@ Goal: 3-5 real commits every day
 - [x] Day 17: API - Cancel / Reschedule
 - [x] Day 18: Validation (Zod) + Error handling
 - [x] Day 19: Email notifications
-- [ ] Day 20: File upload + Advanced filters
+- [x] Day 20: File upload + Advanced filters
 - [ ] Day 21: API documentation
 
 ## Week 4 - Polish (14 - 22 Nov)

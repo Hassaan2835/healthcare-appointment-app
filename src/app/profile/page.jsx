@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth-options";
 import prisma from "@/lib/prisma";
 import ProfileForm from "@/components/ProfileForm";
+import AvatarUpload from "@/components/AvatarUpload";
 
 export const metadata = {
   title: "My Profile | Healthcare Appointment App",
@@ -76,6 +77,8 @@ export default async function ProfilePage() {
           </p>
         </div>
       </div>
+
+      <AvatarUpload initialImage={user.image || null} userName={user.name} />
 
       <ProfileForm initialName={user.name} initialPhone={user.phone || ""} />
     </section>

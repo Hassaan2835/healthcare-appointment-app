@@ -4,6 +4,7 @@ import {
   serializeDbDoctor,
   serializeSampleDoctor,
   filterSampleDoctors,
+  sortDoctors,
   paginate,
 } from "@/lib/doctors-api";
 import { doctorQuerySchema, validateBody } from "@/lib/validation";
@@ -15,6 +16,9 @@ import { handleApiError } from "@/lib/api-errors";
 //   q           search by doctor name, specialty, hospital or city
 //   specialty   exact specialty name (e.g. "Cardiology"), "All" means any
 //   available   "true" | "false" — only doctors taking appointments
+//   minFee, maxFee   consultation fee range in Rs. (a max below the
+//     min is ignored) · minExperience: minimum years of experience
+//   sort        "fee-asc" | "fee-desc" | "experience" | "newest"
 //   page, limit  pagination (limit defaults to 20, max 50)
 //
 // Response: { doctors, total, page, limit, pages, source }
@@ -26,7 +30,19 @@ export async function GET(request) {
     doctorQuerySchema,
     Object.fromEntries(request.nextUrl.searchParams.entries())
   );
-  const { q, specialty, available, page, limit } = query;
+  const { q, specialty, available, minFee, maxFee, minExperience, sort, page, limit } = query;
+
+  // Day 20: advanced filters. A max fee below the min fee is ignored
+  // so a half-filled range never filters everything out by accident.
+  const max = maxFee !== null && (minFee === null || maxFee >= minFee) ? maxFee : null;
+  const orderBy =
+    sort === "fee-asc"
+      ? { fee: "asc" }
+      : sort === "fee-desc"
+        ? { fee: "desc" }
+        : sort === "experience"
+          ? { experience: "desc" }
+          : { createdAt: "desc" };
 
   try {
     const where = {};
@@ -35,6 +51,14 @@ export async function GET(request) {
     }
     if (available !== null) {
       where.available = available;
+    }
+    if (minFee !== null || max !== null) {
+      where.fee = {};
+      if (minFee !== null) where.fee.gte = minFee;
+      if (max !== null) where.fee.lte = max;
+    }
+    if (minExperience !== null) {
+      where.experience = { gte: minExperience };
     }
     if (q) {
       where.OR = [
@@ -48,7 +72,7 @@ export async function GET(request) {
       prisma.doctor.findMany({
         where,
         include: { user: { select: { name: true } } },
-        orderBy: { createdAt: "asc" },
+        orderBy,
         skip: (page - 1) * limit,
         take: limit,
       }),
@@ -65,8 +89,9 @@ export async function GET(request) {
     });
   } catch (error) {
     console.error("GET /api/doctors database error, using sample data:", error);
-    const filtered = filterSampleDoctors({ q, specialty, available });
-    const { items, total, page: safePage, pages } = paginate(filtered, page, limit);
+    const filtered = filterSampleDoctors({ q, specialty, available, minFee, maxFee, minExperience });
+    const sorted = sortDoctors(filtered, sort);
+    const { items, total, page: safePage, pages } = paginate(sorted, page, limit);
     return NextResponse.json({
       doctors: items.map(serializeSampleDoctor),
       total,

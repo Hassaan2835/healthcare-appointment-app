@@ -37,3 +37,6 @@ next-env.d.ts
 # prisma local db
 *.db
 *.db-journal
+
+# uploaded files (Day 20: profile pictures live on disk, not in git)
+/public/uploads/
